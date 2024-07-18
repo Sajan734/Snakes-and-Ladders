@@ -94,7 +94,7 @@ def create_grid(screen, x_squares, y_squares, colour = (255, 255, 255), x = (50,
   return x_list, y_list, x_width, y_width
 
 
-screen = pg.display.set_mode((600, 400))
+screen = pg.display.set_mode((1000, 600))
 
 def open_customize():
   menu._open(customize_menu)
@@ -118,10 +118,9 @@ main_theme = pygame_menu.themes.THEME_BLUE.copy()
 main_theme.widget_font = pygame_menu.font.FONT_MUNRO
 
 
-menu = pygame_menu.Menu('Snakes and Ladders', 600, 400,
+menu = pygame_menu.Menu('Snakes and Ladders', 1000, 600,
                        theme=main_theme) # decorate this later
-customization = menu.add.button('Customize', open_customize)
-menu.add.button('PLAY', main_screen)
+menu.add.button('GET STARTED', open_customize)
 menu.add.button('Quit', pygame_menu.events.EXIT)
 
 # decorator = customization.get_decorator()
@@ -133,10 +132,209 @@ menu.add.button('Quit', pygame_menu.events.EXIT)
 # decorator = menu.get_decorator()
 # decorator.add_line((10, 10), (100, 100), color=(45, 180, 34), width=10)
 
+# def numberofplayerfunc():
+#    for i in range(customize_menu)
 
-customize_menu = pygame_menu.Menu('Customize', 600, 400,
+customize_menu = pygame_menu.Menu('Customize', 1000, 600,
                        theme=main_theme)
-customize_menu.add.button('Customize')
+
+player_number_options = {0: '2', 1: '3', 2: '4', 3: '5', 4: '6'}
+numberofplayerslider = customize_menu.add.range_slider('# of Players', 0, list(player_number_options.keys()),
+                      slider_text_value_enabled=False,
+                      value_format=lambda x: player_number_options[x])
+
+p1_colour = (0, 0, 0)
+p2_colour = (0, 0, 0)
+p3_colour = (0, 0, 0)
+p4_colour = (0, 0, 0)
+p5_colour = (0, 0, 0)
+p6_colour = (0, 0, 0)
+
+p1_name = 'p1'
+p2_name = 'p2'
+p3_name = 'p3'
+p4_name = 'p4'
+p5_name = 'p5'
+p6_name = 'p6'
+
+def p1_colour_selection(key, value):
+  global p1_colour
+  p1_colour = value
+  print(p1_colour)
+def p2_colour_selection(key, value):
+  global p2_colour
+  p2_colour = value
+  print(p2_colour)
+def p3_colour_selection(key, value):
+  global p3_colour
+  p3_colour = value
+  print(p3_colour)
+def p4_colour_selection(key, value):
+  global p4_colour
+  p4_colour = value
+  print(p4_colour)
+def p5_colour_selection(key, value):
+  global p5_colour
+  p5_colour = value
+  print(p5_colour)
+def p6_colour_selection(key, value):
+  global p6_colour
+  p6_colour = value
+  print(p6_colour)
+
+def p1_name_selection(value):
+  global p1_name
+  p1_name = value
+  print(p1_name)
+def p2_name_selection(value):
+  global p2_name
+  p2_name = value
+  print(p2_name)
+def p3_name_selection(value):
+  global p3_name
+  p3_name = value
+  print(p3_name)
+def p4_name_selection(value):
+  global p4_name
+  p4_name = value
+  print(p4_name)
+def p5_name_selection(value):
+  global p5_name
+  p5_name = value
+  print(p5_name)
+def p6_name_selection(value):
+  global p6_name
+  p6_name = value
+  print(p6_name)
+
+# ******** WE NEED TO CHANGE THE RGB VALUES BELOW; THEY'RE RANDOM FOR NOW**********
+p1_name_selector = customize_menu.add.text_input('Player 1: ', default='<EDIT>', onchange=p1_name_selection, maxchar=10)
+p1_colour_selector = customize_menu.add.dropselect(
+    title='Player 1',
+    items=[('Red', (0, 0, 0)),
+          ('Orange', (0, 0, 255)),
+          ('Yellow', (0, 255, 255)),
+          ('Green', (255, 0, 255)),
+          ('Blue', (0, 255, 0)),
+          ('Purple', (255, 0, 0)),
+          ('Pink', (255, 255, 0))],
+    placeholder='Scroll to see colours'
+)
+
+p2_name_selector = customize_menu.add.text_input('Player 2: ', default='<EDIT>', onchange=p2_name_selection, maxchar=10)
+p2_colour_selector = customize_menu.add.dropselect(
+    title='Player 2',
+    items=[('Red', (0, 0, 0)),
+          ('Orange', (0, 0, 255)),
+          ('Yellow', (0, 255, 255)),
+          ('Green', (255, 0, 255)),
+          ('Blue', (0, 255, 0)),
+          ('Purple', (255, 0, 0)),
+          ('Pink', (255, 255, 0))],
+    placeholder='Scroll to see colours'
+)
+
+p3_name_selector = customize_menu.add.text_input('Player 3: ', default='<EDIT>', onchange=p3_name_selection, maxchar=10)
+p3_colour_selector = customize_menu.add.dropselect(
+    title='Player 3',
+    items=[('Red', (0, 0, 0)),
+          ('Orange', (0, 0, 255)),
+          ('Yellow', (0, 255, 255)),
+          ('Green', (255, 0, 255)),
+          ('Blue', (0, 255, 0)),
+          ('Purple', (255, 0, 0)),
+          ('Pink', (255, 255, 0))],
+    placeholder='Scroll to see colours'
+)
+
+p4_name_selector = customize_menu.add.text_input('Player 4: ', default='<EDIT>', onchange=p4_name_selection, maxchar=10)
+p4_colour_selector = customize_menu.add.dropselect(
+    title='Player 4',
+    items=[('Red', (0, 0, 0)),
+          ('Orange', (0, 0, 255)),
+          ('Yellow', (0, 255, 255)),
+          ('Green', (255, 0, 255)),
+          ('Blue', (0, 255, 0)),
+          ('Purple', (255, 0, 0)),
+          ('Pink', (255, 255, 0))],
+    placeholder='Scroll to see colours',
+)
+
+p5_name_selector = customize_menu.add.text_input('Player 5: ', default='<EDIT>', onchange=p5_name_selection, maxchar=10)
+p5_colour_selector = customize_menu.add.dropselect(
+    title='Player 5',
+    items=[('Red', (0, 0, 0)),
+          ('Orange', (0, 0, 255)),
+          ('Yellow', (0, 255, 255)),
+          ('Green', (255, 0, 255)),
+          ('Blue', (0, 255, 0)),
+          ('Purple', (255, 0, 0)),
+          ('Pink', (255, 255, 0))],
+    placeholder='Scroll to see colours',
+)
+
+p6_name_selector = customize_menu.add.text_input('Player 6: ', default='<EDIT>', onchange=p6_name_selection, maxchar=10)
+p6_colour_selector = customize_menu.add.dropselect(
+    title='Player 6',
+    items=[('Red', (0, 0, 0)),
+          ('Orange', (0, 0, 255)),
+          ('Yellow', (0, 255, 255)),
+          ('Green', (255, 0, 255)),
+          ('Blue', (0, 255, 0)),
+          ('Purple', (255, 0, 0)),
+          ('Pink', (255, 255, 0))],
+    placeholder='Scroll to see colours'
+)
+
+p3_colour_selector.hide()
+p4_colour_selector.hide()
+p5_colour_selector.hide()
+p6_colour_selector.hide()
+p3_name_selector.hide()
+p4_name_selector.hide()
+p5_name_selector.hide()
+p6_name_selector.hide()
+
+
+number_of_players = 2
+def numberofplayerslider_change(value):
+  global number_of_players
+  number_of_players = value + 2
+  if number_of_players == 3:
+    p3_name_selector.show()    
+    p3_colour_selector.show()
+  elif number_of_players == 4:
+    p4_name_selector.show()
+    p4_colour_selector.show()
+  elif number_of_players == 5:
+    p5_name_selector.show()
+    p5_colour_selector.show()
+  elif number_of_players == 6:
+    p6_name_selector.show()
+    p6_colour_selector.show()
+  
+  if number_of_players < 3:
+     p3_name_selector.hide()
+     p3_colour_selector.hide()
+  elif number_of_players < 4:
+     p4_name_selector.hide()
+     p4_colour_selector.hide()
+  elif number_of_players < 5:
+     p5_name_selector.hide()
+     p5_colour_selector.hide()
+  elif number_of_players < 6:
+     p6_name_selector.hide()
+     p6_colour_selector.hide()
+
+numberofplayerslider.set_onchange(numberofplayerslider_change)
+p1_colour_selector.set_onchange(p1_colour_selection)
+p2_colour_selector.set_onchange(p2_colour_selection)
+p3_colour_selector.set_onchange(p3_colour_selection)
+p4_colour_selector.set_onchange(p4_colour_selection)
+p5_colour_selector.set_onchange(p5_colour_selection)
+p6_colour_selector.set_onchange(p6_colour_selection)
+
+customize_menu.add.button('PLAY', main_screen, font_size=40)
 
 clock = pg.time.Clock()
 
