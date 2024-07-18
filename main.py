@@ -8,7 +8,25 @@ import os
 import json
 from datetime import datetime, timezone
 
+#Initialize Pygame window
+pg.init()
+
+line_width = 3
+
+GRID_HEIGHT = 500
+GRID_WIDTH = 500
+
+blue = (0, 0, 255)
+pg.font.init()
+font = pg.font.Font(None, 20)
+fontM = pg.font.Font(None, 40)
+fontXL = pg.font.Font(None, 50)
+
+screen = pg.display.set_mode((1000, 600))
+pg.display.set_caption("Snakes and Ladders")
 clock = pg.time.Clock()
+    
+white = (255, 255, 255)
 gride = []
 scale_y = (600 - GRID_HEIGHT)/2
 scale_x = (1000 - GRID_WIDTH)/2
@@ -82,6 +100,7 @@ def open_customize():
   menu._open(customize_menu)
 
 def main_screen():
+    global scale_x, scale_y, GRID_WIDTH, GRID_HEIGHT
     run = True
     screen = pg.display.set_mode((1000, 600))
     while run:
@@ -136,33 +155,3 @@ while running:
       menu.draw(screen)
     pg.display.update()
 
-#Initialize Pygame window
-pg.init()
-
-line_width = 3
-
-GRID_HEIGHT = 500
-GRID_WIDTH = 1000
-
-blue = (0, 0, 255)
-pg.font.init()
-font = pg.font.Font(None, 20)
-fontM = pg.font.Font(None, 40)
-fontXL = pg.font.Font(None, 50)
-
-screen = pg.display.set_mode((1000, 600))
-pg.display.set_caption("Snakes and Ladders")
-clock = pg.time.Clock()
-    
-run = True
-while run:
-    create_grid(0, 0, 500)
-
-    for event in pg.event.get():
-        if event.type == pg.QUIT:
-            run = False
-
-    pg.display.update()
-
-pg.QUIT
-                
