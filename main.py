@@ -119,8 +119,6 @@ def open_customize():
 
 def main_screen():
     global scale_x, scale_y, GRID_WIDTH, GRID_HEIGHT
-    run = True
-    screen = pg.display.set_mode((1000, 600))
     while run:
         x_list, y_list, x_width, y_width = create_grid(screen, 10, 10, x= (scale_x, scale_x + GRID_WIDTH), y = (scale_y, scale_y + GRID_HEIGHT))
         create_numbers()
@@ -152,6 +150,8 @@ menu.add.button('Quit', pygame_menu.events.EXIT)
 
 # def numberofplayerfunc():
 #    for i in range(customize_menu)
+
+
 
 customize_menu = pygame_menu.Menu('Customize', 1000, 600,
                        theme=main_theme)
@@ -312,16 +312,16 @@ number_of_players = 2
 def numberofplayerslider_change(value):
   global number_of_players
   number_of_players = value + 2
-  if number_of_players == 3:
+  if number_of_players >= 3:
     p3_name_selector.show()    
     p3_colour_selector.show()
-  elif number_of_players == 4:
+  if number_of_players >= 4:
     p4_name_selector.show()
     p4_colour_selector.show()
-  elif number_of_players == 5:
+  if number_of_players >= 5:
     p5_name_selector.show()
     p5_colour_selector.show()
-  elif number_of_players == 6:
+  if number_of_players >= 6:
     p6_name_selector.show()
     p6_colour_selector.show()
   
