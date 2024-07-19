@@ -297,8 +297,6 @@ p6_colour_selector = customize_menu.add.dropselect(
     placeholder='Scroll to see colours'
 )
 
-
-
 p3_colour_selector.hide()
 p4_colour_selector.hide()
 p5_colour_selector.hide()
@@ -307,7 +305,6 @@ p3_name_selector.hide()
 p4_name_selector.hide()
 p5_name_selector.hide()
 p6_name_selector.hide()
-
 
 number_of_players = 2
 def numberofplayerslider_change(value):
