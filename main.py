@@ -19,6 +19,9 @@ def open_customize():
 def main_screen():
     print('main_screen') # add the pygame code here
 
+def open_end():
+  menu._open(end_menu)
+
 
 main_theme = pygame_menu.themes.THEME_BLUE.copy()
 main_theme.widget_font = pygame_menu.font.FONT_MUNRO
@@ -28,21 +31,21 @@ menu = pygame_menu.Menu('Snakes and Ladders', 600, 400,
                        theme=main_theme) # decorate this later
 customization = menu.add.button('Customize', open_customize)
 menu.add.button('PLAY', main_screen)
+menu.add.button('END MENU', open_end)
 menu.add.button('Quit', pygame_menu.events.EXIT)
 
-# decorator = customization.get_decorator()
-# decorator.add_polygon([(1, 1), (1, 10), (10, 1)], color=(255, 0, 0))
-
-# # If the widget needs a bigger margin
-# customization.set_padding((25, 25, 10, 10))
-
-# decorator = menu.get_decorator()
-# decorator.add_line((10, 10), (100, 100), color=(45, 180, 34), width=10)
 
 
 customize_menu = pygame_menu.Menu('Customize', 600, 400,
                        theme=main_theme)
 customize_menu.add.button('Customize')
+
+end_menu = pygame_menu.Menu('Game Over!', 600, 400,
+                       theme=main_theme)
+end_menu.add.label(f'{str("winner_username")} wins!', font_size=48)
+end_menu.add.button('Leaderboard')
+end_menu.add.button('Game Log')
+end_menu.add.button('Quit')
 
 clock = pg.time.Clock()
 
