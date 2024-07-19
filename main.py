@@ -454,13 +454,13 @@ def numberofplayerslider_change(value):
   if number_of_players < 3:
      p3_name_selector.hide()
      p3_colour_selector.hide()
-  elif number_of_players < 4:
+  if number_of_players < 4:
      p4_name_selector.hide()
      p4_colour_selector.hide()
-  elif number_of_players < 5:
+  if number_of_players < 5:
      p5_name_selector.hide()
      p5_colour_selector.hide()
-  elif number_of_players < 6:
+  if number_of_players < 6:
      p6_name_selector.hide()
      p6_colour_selector.hide()
 
