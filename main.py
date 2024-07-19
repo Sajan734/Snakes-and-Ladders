@@ -8,6 +8,7 @@ import os
 import json
 from datetime import datetime, timezone
 import random
+import math
 
 #Initialize Pygame window
 pg.init()
@@ -16,6 +17,7 @@ line_width = 3
 
 GRID_HEIGHT = 500
 GRID_WIDTH = 500
+winner_name = ""
 
 # ---------------------------------COORDS-----------------------------------------
 x_vals = [50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
@@ -61,8 +63,6 @@ fontXL = pg.font.Font(None, 50)
 screen = pg.display.set_mode((1000, 600))
 pg.display.set_caption("Snakes and Ladders")
 clock = pg.time.Clock()
-
-
     
 white = (255, 255, 255)
 gride = []
@@ -115,8 +115,11 @@ def create_grid(screen, x_squares, y_squares, colour = (255, 255, 255), x = (50,
 
     gameTitle = "Snakes and Ladders"
     gameTitle_img = fontXL.render(gameTitle, True, blue)
+    labelTitle = "Press space to roll a die"
+    labelTitle_img = font.render(labelTitle, True, white)
     # pg.draw.rect(screen, green, (200, 150))
     screen.blit(gameTitle_img, (600, 50))
+    screen.blit(labelTitle_img, (650, 90))
 
   #Do the same process for the y-values
 
@@ -131,8 +134,8 @@ def place_game_pieces(player_entry):
   global coords, image, turn, playersinfo
   image = pg.image.load(player_entry[1])
   pg.transform.scale(image, (30, 30))
-  print("PLAYER ENTRY 3 VALUES: ", player_entry[3][0][1]) 
-  player_icon = font.render(str(turn + 1), True, player_entry[3][0][1]) # <== playersinfo[turn][3]
+  # print(" PLAYER ENTRY : ", player_entry[3])
+  player_icon = font.render(str(turn + 1), True,  player_entry[3]) # <== playersinfo[turn][3]
   screen.blit(image, coords[100 - player_entry[2]][player_entry[2]])
   screen.blit(player_icon, (coords[100 - player_entry[2]][player_entry[2]][0]+30, coords[100 - player_entry[2]][player_entry[2]][1]))
 
@@ -149,9 +152,6 @@ def transport_piece(player_entry, old_value):
     screen.blit(num_img, (x_pos * 50 + 12 + scale_x, y_pos * 50 + 12 + scale_y))"""
   create_grid(screen, 10, 10, x= (scale_x, scale_x + GRID_WIDTH), y = (scale_y, scale_y + GRID_HEIGHT))
   
-
-
-
   place_game_pieces(player_entry)
 
 
@@ -167,7 +167,8 @@ def transport_piece(player_entry, old_value):
   """
 
 def snakes_and_ladders(player_entry):
-  global turn, number_of_players
+  global turn, number_of_players, winner_name
+  
   for event in pg.event.get():
     if event.type == pg.KEYDOWN:
       if event.key == pg.K_SPACE:
@@ -181,42 +182,65 @@ def snakes_and_ladders(player_entry):
           if turn == number_of_players:
             turn = 0
           print(turn, player_entry[2])
-          playerTurnTitle = f"Player {turn+1}'s turn"
+          playerTurnTitle = f"{turn+1}'s turn"
+          nextMessage = "NEXT: "
           # playersinfo[turn][3]
           print(playersinfo[turn])
-          playerTurnTitle_img = fontM.render(playerTurnTitle, True, playersinfo[turn][3][0][1])
-          pg.draw.rect(screen, (0,0,0), (650, 150, 200, 50))
-          screen.blit(playerTurnTitle_img, (600, 150))
+          nextMessage_img = fontM.render(nextMessage, True, white)
+          playerTurnTitle_img = fontM.render(playerTurnTitle, True, playersinfo[turn][3])
+          pg.draw.rect(screen, (0,0,0), (600, 500, 300, 50))
+          screen.blit(nextMessage_img, (600, 500))
+          screen.blit(playerTurnTitle_img, (700, 500))
           break
         elif player_entry[2] >= 100:
           player_entry[2] = 100
+          winner_name = player_entry[0]
           transport_piece(player_entry, old_value)
           generate_S_and_L(playersinfo[turn])
           turn += 1
           if turn == number_of_players:
             turn = 0
+
           print(turn, player_entry[2])
-          print(turn, 'WINNER')
+          print(turn, winner_name, "is the winner!")
+
+          runny = True
+          while runny:
+            end_menu = pygame_menu.Menu('Game Over!', 600, 400,
+                                  theme=main_theme)
+            end_menu.add.label(f'{str(winner_name)} wins!', font_size=48)
+            end_menu.add.button('Play Again')
+            end_menu.add.button('Quit', pygame_menu.events.EXIT)
+            end_menu.mainloop(screen)
+            pg.display.update()
+            for event in events:
+              if event.type == pg.QUIT:
+                  pg.quit()
+                  quit()
           break
 
 
 def get_dice_value():
-    global dice_value
+    global dice_value, playersinfo, turn
     # time.sleep(1)
     dice_value = random.randint(1, 6)
     die_image = pg.image.load(f'dice/dice-{str(dice_value)}.png')
-    screen.blit(die_image, (600, 400))
+    die_image = pg.transform.scale(die_image, (100,100))
+    screen.blit(die_image, (600, 150))
+
     print("Its a " + str(dice_value))
-    gameStatusTitle = "Its a " + str(dice_value)
-    gameStatusTitle_img = fontM.render(gameStatusTitle, True, playersinfo[turn][3][0][1])
-    pg.draw.rect(screen, (0,0,0), (650, 200, 200, 50))
-    screen.blit(gameStatusTitle_img, (600, 150))
+    gameStatusTitle = "You rolled a " + str(dice_value)
+    print("PLAYERS INFO TURN: ", playersinfo[turn])
+    gameStatusTitle_img = fontM.render(gameStatusTitle, True, playersinfo[turn][3])
+    pg.draw.rect(screen, (0,0,0), (748, 175, 200, 50))
+    screen.blit(gameStatusTitle_img, (750, 175))
+
     return dice_value
+
 
 
 def open_customize():
   menu._open(customize_menu)
-
    
 def main_screen():
     global scale_x, scale_y, GRID_WIDTH, GRID_HEIGHT, number_of_players, width, turn, playersinfo
@@ -260,11 +284,6 @@ menu = pygame_menu.Menu('Snakes and Ladders', 1000, 600,
 menu.add.button('GET STARTED', open_customize)
 menu.add.button('Quit', pygame_menu.events.EXIT)
 
-
-# def numberofplayerfunc():
-#    for i in range(customize_menu)
-
-
 customize_menu = pygame_menu.Menu('Customize', 1000, 600,
                        theme=main_theme)
 
@@ -273,19 +292,19 @@ numberofplayerslider = customize_menu.add.range_slider('# of Players', 0, list(p
                       slider_text_value_enabled=False,
                       value_format=lambda x: player_number_options[x])
 
-p1_colour = (('Red', (255, 0, 0)), 0)
-p2_colour = (('Red', (255, 0, 0)), 0)
-p3_colour = (('Red', (255, 0, 0)), 0)
-p4_colour = (('Red', (255, 0, 0)), 0)
-p5_colour = (('Red', (255, 0, 0)), 0)
-p6_colour = (('Red', (255, 0, 0)), 0)
+p1_colour = (255, 0, 0)
+p2_colour = (255, 0, 0)
+p3_colour = (255, 0, 0)
+p4_colour = (255, 0, 0)
+p5_colour = (255, 0, 0)
+p6_colour = (255, 0, 0)
 
-p1_name = 'p1'
-p2_name = 'p2'
-p3_name = 'p3'
-p4_name = 'p4'
-p5_name = 'p5'
-p6_name = 'p6'
+p1_name = 'Player 1'
+p2_name = 'Player 2'
+p3_name = 'Player 3'
+p4_name = 'Player 4'
+p5_name = 'Player 5'
+p6_name = 'Player 6'
 
 p1avatar = spriteslist[0]
 p2avatar = spriteslist[0]
@@ -450,12 +469,6 @@ p6_colour_selector.set_onchange(p6_colour_selection)
 
 customize_menu.add.button('PLAY', main_screen, font_size=40)
 
-end_menu = pygame_menu.Menu('Game Over!', 600, 400,
-                       theme=main_theme)
-end_menu.add.label(f'{str("winner_username")} wins!', font_size=48)
-end_menu.add.button('Leaderboard')
-end_menu.add.button('Game Log')
-end_menu.add.button('Quit')
 
 clock = pg.time.Clock()
 
@@ -478,10 +491,42 @@ def players_turns():
       pg.draw.rect(screen, green, (200, 150))
       screen.blit(message_img, (700, 250))
       
+# Add a message to the screen for snake hits
+def got_snake_bite(player_entry, end_square):
+  #unblit_message() <----- NOT NEEDED ANYMORE
+  snake_bite = [
+    "Boohoo ):",
+    "Bummer",
+    "Snake bite",
+    "Oh no",
+    "Dang"]
+  
+  snakemessage = random.choice(snake_bite) + " " + player_entry[0] + f"! You got sent back to square {end_square}."
+  snakemessage_img = font.render(snakemessage, True, player_entry[3])
+  pg.draw.rect(screen, (0,0,0), (600, 350, 300, 50))
+  screen.blit(snakemessage_img, (600, 350))
+  # time.sleep(1)
+  # pg.draw.rect(screen, (0,0,0), (700, 350, 300, 50))
+
+# Add a message to the screen for ladder hits
+def got_ladder_jump(player_entry, end_square):
+  #unblit_message() <----- NOT NEEDED ANYMORE
+  ladder_jump = [
+    "Woohoo",
+    "Wow",
+    "Awesome",
+    "No way ",
+    "Yaayy"]
+  
+  laddermessage = random.choice(ladder_jump) + " " + player_entry[0] + f"! You got sent to square {end_square}"
+  laddermessage_img = font.render(laddermessage, True, player_entry[3])
+  pg.draw.rect(screen, (0,0,0), (600, 350, 300, 50))
+  screen.blit(laddermessage_img, (600, 350))
+  # time.sleep(1)
+  # pg.draw.rect(screen, (0,0,0), (700, 350, 300, 50))
 
 # Generate snakes and ladders
 def generate_S_and_L(player_entry):
-   
    # ladder takes you up from 'key' to 'value'
   ladders = {
     3: 20,
@@ -506,10 +551,24 @@ def generate_S_and_L(player_entry):
  
   
   for i in snakes.items():
-
     start_pos = (coords[100 - i[0]][i[0]][0]+25, coords[100 - i[0]][i[0]][1]+25)
     end_pos = (coords[100 - i[1]][i[1]][0]+25, coords[100 - i[1]][i[1]][1]+25)
-    pg.draw.line(screen, (255, 110, 107), start_pos, end_pos, 2)
+    
+    pg.draw.line(screen, (0, 255, 0), start_pos, end_pos, 4)
+
+    # rect = pg.Rect(min(start_pos[0], end_pos[0]), min(start_pos[1], end_pos[1]), abs(end_pos[0] - start_pos[0]), abs(end_pos[1] - start_pos[1]))
+    # start_angle = [-math.pi / 2, -math.pi / 3, -math.pi / 4, -math.pi / 5]
+    # stop_angle = [0]       
+
+    # rand_num_angle = random.randint(1, 2)
+    # if rand_num_angle == 1:
+    #   start_angle = [-math.pi / 2, -math.pi / 3, -math.pi / 4, -math.pi / 5]
+    #   stop_angle = [0]       
+    # elif rand_num_angle == 2:
+    #   start_angle = [0]
+    #   stop_angle = [math.pi / 2, math.pi / 3, math.pi / 4, math.pi / 5]
+
+    # pg.draw.arc(screen, (3, 252, 65), rect, random.choice(start_angle), random.choice(stop_angle))
 
     if player_entry[2] == i[0]:
       player_entry[2] = i[1]
@@ -517,56 +576,52 @@ def generate_S_and_L(player_entry):
       got_snake_bite(player_entry, i[1])
       print('YOU WENT DOWN A SNAKE')
       print(i[1], i[0])
+    else:
+      pg.draw.rect(screen, (0,0,0), (750, 225, 200, 50))
+    
+
+    area_title = "You are now at square " + str(playersinfo[turn-1][2]) + "."
+    area_title_img = font.render(area_title, True, playersinfo[turn-1][3])
+    pg.draw.rect(screen, (0,0,0), (750, 225, 200, 50))
+    screen.blit(area_title_img, (750, 225))
+
 
   for i in ladders.items():
+    pg.draw.rect(screen, (0,0,0), (750, 225, 200, 50))
+    start_pos = (coords[100 - i[0]][i[0]][0]+25, coords[100 - i[0]][i[0]][1]+18)
+    end_pos = (coords[100 - i[1]][i[1]][0]+25, coords[100 - i[1]][i[1]][1]+18)
+    
+    start_pos2 = (coords[100 - i[0]][i[0]][0]+25, coords[100 - i[0]][i[0]][1]+27)
+    end_pos2 = (coords[100 - i[1]][i[1]][0]+25, coords[100 - i[1]][i[1]][1]+27)
 
-    start_pos = (coords[100 - i[0]][i[0]][0]+25, coords[100 - i[0]][i[0]][1]+25)
-    end_pos = (coords[100 - i[1]][i[1]][0]+25, coords[100 - i[1]][i[1]][1]+25)
-    pg.draw.line(screen, (98, 255, 0), start_pos, end_pos, 2)
+    pg.draw.line(screen, (252, 232, 3), start_pos, end_pos, 2)
+    pg.draw.line(screen, (252, 232, 3), start_pos2, end_pos2, 2)
     
     if player_entry[2] == i[0]:
       player_entry[2] = i[1]
       transport_piece(player_entry, i[0])
-      got_snake_bite(player_entry, i[1])
+      got_ladder_jump(player_entry, i[1])
       print('YOU WENT UP A LADDER')
       print(i[1], i[0])
+    else:
+      pg.draw.rect(screen, (0,0,0), (750, 225, 200, 50))
+    # else:
+    #    pg.draw.rect(screen, (0,0,0), (700, 350, 300, 50))
+
+    area_title = "You are now at square " + str(playersinfo[turn-1][2]) + "."
+    area_title_img = font.render(area_title, True, playersinfo[turn-1][3])
+    pg.draw.rect(screen, (0,0,0), (750, 225, 200, 50))
+    screen.blit(area_title_img, (750, 225))
 
 
-# Add a message to the screen for snake hits
-def got_snake_bite(player_entry, end_square):
-  unblit_message()
-  snake_bite = [
-    "Boohoo ):",
-    "Bummer",
-    "Snake bite",
-    "Oh no",
-    "Dang"]
-  
-  snakemessage = random.choice(snake_bite) + " " + player_entry[0] + f"! You got sent back to square {end_square}"
-  snakemessage_img = font.render(snakemessage, True, player_entry[3])
-  screen.blit(snakemessage_img, (700, 350))
 
-# Add a message to the screen for ladder hits
-def got_ladder_jump(player_entry, end_square):
-  unblit_message()
-  ladder_jump = [
-    "Woohoo",
-    "Wow",
-    "Awesome",
-    "No way ",
-    "Yaayy"]
-  
-  laddermessage = random.choice(ladder_jump) + " " + player_entry[0] + f"! You got sent to square {end_square}"
-  laddermessage_img = font.render(laddermessage, True, player_entry[3])
-  screen.blit(laddermessage_img, (700, 350))
-
-def unblit_message():
-  rect = pg.Rect(0, 0, 0, 0)
-  rect.width = 300
-  rect.height = 30
-  rect.left = 700
-  rect.top = 350
-  pg.draw.rect(screen, (255, 255, 255), rect)
+#def unblit_message(): <----- NOT NEEDED ANYMORE
+ # rect = pg.Rect(0, 0, 0, 0)
+  #rect.width = 300
+ # rect.height = 30
+ # rect.left = 700
+ # rect.top = 350
+ # pg.draw.rect(screen, (0, 0, 0), rect)
 
 running = True
 while running:
