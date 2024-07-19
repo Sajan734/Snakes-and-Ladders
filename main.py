@@ -296,6 +296,7 @@ main_theme.title_font_color = (23, 101, 179)
 
 menu = pygame_menu.Menu('Snakes and Ladders', 1000, 600,
                        theme=main_theme) # decorate this later
+menu.add.image("snakesandladders.png", scale = (0.3, 0.3))
 menu.add.button('GET STARTED', open_customize)
 menu.add.button('Quit', pygame_menu.events.EXIT)
 
