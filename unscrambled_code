@@ -49,8 +49,6 @@ def get_dice_value():
     print("Its a " + str(dice_value))
     return dice_value
 
-
-
 def got_snake_bite(old_value, current_value, player_name):
   snake_bite = [
       "boohoo",
