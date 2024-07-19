@@ -9,6 +9,7 @@ import json
 from datetime import datetime, timezone
 import random
 import math
+from collections import deque
 
 #Initialize Pygame window
 pg.init()
@@ -28,7 +29,6 @@ counter = 100
 
 for y_counter in range(0,10):
     for i in x_vals:
-        # print(f"You are on: ", str(counter) + " - " + str({y_vals[y_counter]}))
         coords.append({counter : (i, y_vals[y_counter])})
         counter -= 1
 
@@ -54,7 +54,7 @@ spriteslist = [red, orange, yellow, green, blue, purple, pink]
 
 blackBg = (0, 0, 0)
 
-blue = (0, 0, 255)
+blue = (51, 102, 255)
 pg.font.init()
 font = pg.font.Font(None, 20)
 fontM = pg.font.Font(None, 40)
@@ -134,13 +134,11 @@ def place_game_pieces(player_entry):
   global coords, image, turn, playersinfo
   image = pg.image.load(player_entry[1])
   pg.transform.scale(image, (30, 30))
-  # print(" PLAYER ENTRY : ", player_entry[3])
   player_icon = font.render(str(turn + 1), True,  player_entry[3]) # <== playersinfo[turn][3]
   screen.blit(image, coords[100 - player_entry[2]][player_entry[2]])
   screen.blit(player_icon, (coords[100 - player_entry[2]][player_entry[2]][0]+30, coords[100 - player_entry[2]][player_entry[2]][1]))
 
 def transport_piece(player_entry, old_value):
-  # print("PLAYER ENTRY 2 VALUES: ", player_entry[1], " - OOLD VALUE => ", old_value)
   image = pg.image.load(str(player_entry[1]))
   image.fill((0,0,0, 255))
   
@@ -167,7 +165,7 @@ def transport_piece(player_entry, old_value):
   """
 
 def snakes_and_ladders(player_entry):
-  global turn, number_of_players, winner_name
+  global turn, number_of_players, winner_name, end_menu
   
   for event in pg.event.get():
     if event.type == pg.KEYDOWN:
@@ -181,16 +179,14 @@ def snakes_and_ladders(player_entry):
           turn += 1
           if turn == number_of_players:
             turn = 0
-          print(turn, player_entry[2])
-          playerTurnTitle = f"{turn+1}'s turn"
+          playerTurnTitle = f"{playersinfo[turn][0]}'s turn"
           nextMessage = "NEXT: "
           # playersinfo[turn][3]
-          print(playersinfo[turn])
           nextMessage_img = fontM.render(nextMessage, True, white)
           playerTurnTitle_img = fontM.render(playerTurnTitle, True, playersinfo[turn][3])
-          pg.draw.rect(screen, (0,0,0), (600, 500, 300, 50))
-          screen.blit(nextMessage_img, (600, 500))
-          screen.blit(playerTurnTitle_img, (700, 500))
+          pg.draw.rect(screen, (0,0,0), (600, 500, 520, 50))
+          screen.blit(nextMessage_img, (600, 520))
+          screen.blit(playerTurnTitle_img, (700, 520))
           break
         elif player_entry[2] >= 100:
           player_entry[2] = 100
@@ -201,22 +197,27 @@ def snakes_and_ladders(player_entry):
           if turn == number_of_players:
             turn = 0
 
-          print(turn, player_entry[2])
-          print(turn, winner_name, "is the winner!")
+
+          for i in range(number_of_players):
+            playersinfo[i][2] = 0
+
 
           runny = True
           while runny:
-            end_menu = pygame_menu.Menu('Game Over!', 600, 400,
+            end_menu = pygame_menu.Menu('Game Over!', 1000, 600,
                                   theme=main_theme)
             end_menu.add.label(f'{str(winner_name)} wins!', font_size=48)
-            end_menu.add.button('Play Again')
+            end_menu.add.button('Play Again', main_screen)
+            end_menu.add.button('Customize', end_open_customize)
             end_menu.add.button('Quit', pygame_menu.events.EXIT)
             end_menu.mainloop(screen)
+
             pg.display.update()
             for event in events:
               if event.type == pg.QUIT:
                   pg.quit()
                   quit()
+
           break
 
 
@@ -228,20 +229,31 @@ def get_dice_value():
     die_image = pg.transform.scale(die_image, (100,100))
     screen.blit(die_image, (600, 150))
 
-    print("Its a " + str(dice_value))
     gameStatusTitle = "You rolled a " + str(dice_value)
-    print("PLAYERS INFO TURN: ", playersinfo[turn])
     gameStatusTitle_img = fontM.render(gameStatusTitle, True, playersinfo[turn][3])
     pg.draw.rect(screen, (0,0,0), (748, 175, 200, 50))
     screen.blit(gameStatusTitle_img, (750, 175))
 
+    pg.draw.rect(screen, (0,0,0), (600, 350, 400, 50))
+
     return dice_value
 
-
+def display_usernames():
+  for i in range(len(playersinfo)):
+    username = str(i+1) + ": " + playersinfo[i][0]
+    username_img = fontM.render(username, True, playersinfo[i][3])
+    image = pg.image.load(playersinfo[i][1])
+    pg.transform.scale(image, (10, 10))
+    screen.blit(image, (600, (315 + 25*i)))
+    screen.blit(username_img, (650, (318 + 25*i)))
 
 def open_customize():
   menu._open(customize_menu)
    
+def end_open_customize():
+  end_menu._open(customize_menu)
+
+
 def main_screen():
     global scale_x, scale_y, GRID_WIDTH, GRID_HEIGHT, number_of_players, width, turn, playersinfo
     global p1_colour, p2_colour, p3_colour, p4_colour, p5_colour, p6_colour
@@ -265,16 +277,18 @@ def main_screen():
         snakes_and_ladders(playersinfo[turn])
 
         create_numbers()
+        pg.draw.rect(screen, (0,0,0), (750, 225, 200, 50))
         for event in pg.event.get():
           if event.type == pg.QUIT:
               run = False
               pg.QUIT()
         generate_S_and_L(playersinfo[turn])
+        display_usernames()
         pg.display.update()
 
 main_theme = pygame_menu.themes.THEME_BLUE.copy()
 main_theme.widget_font = pygame_menu.font.FONT_MUNRO
-main_theme.title_font = pygame_menu.font.FONT_FRANCHISE
+main_theme.title_font = pygame_menu.font.FONT_NEVIS
 main_theme.title_bar_style = pygame_menu.widgets.MENUBAR_STYLE_SIMPLE
 main_theme.title_offset = (5, 1)
 main_theme.title_font_color = (23, 101, 179)
@@ -283,6 +297,9 @@ menu = pygame_menu.Menu('Snakes and Ladders', 1000, 600,
                        theme=main_theme) # decorate this later
 menu.add.button('GET STARTED', open_customize)
 menu.add.button('Quit', pygame_menu.events.EXIT)
+
+end_menu = pygame_menu.Menu('Game Over!', 1000, 600,
+                      theme=main_theme)
 
 customize_menu = pygame_menu.Menu('Customize', 1000, 600,
                        theme=main_theme)
@@ -319,62 +336,50 @@ def p1_colour_selection(key, value):
   p1_colour = value
   p1avatar = spriteslist[key[1]]
 
-  print(p1_colour)
 def p2_colour_selection(key, value):
   global p2_colour
   global p2avatar
   p2_colour = value
   p2avatar = spriteslist[key[1]]
-  print(p2_colour)
 def p3_colour_selection(key, value):
   global p3_colour
   global p3avatar
   p3_colour = value
   p3avatar = spriteslist[key[1]]
-  print(p3_colour)
 def p4_colour_selection(key, value):
   global p4_colour
   global p4avatar
   p4_colour = value
   p4avatar = spriteslist[key[1]]
-  print(p4_colour)
 def p5_colour_selection(key, value):
   global p5_colour
   global p5avatar
   p5_colour = value
   p5avatar = spriteslist[key[1]]
-  print(p5_colour)
 def p6_colour_selection(key, value):
   global p6_colour
   global p6avatar
   p6_colour = value
   p6avatar = spriteslist[key[1]]
-  print(p6_colour)
 
 def p1_name_selection(value):
   global p1_name
   p1_name = value
-  print(p1_name)
 def p2_name_selection(value):
   global p2_name
   p2_name = value
-  print(p2_name)
 def p3_name_selection(value):
   global p3_name
   p3_name = value
-  print(p3_name)
 def p4_name_selection(value):
   global p4_name
   p4_name = value
-  print(p4_name)
 def p5_name_selection(value):
   global p5_name
   p5_name = value
-  print(p5_name)
 def p6_name_selection(value):
   global p6_name
   p6_name = value
-  print(p6_name)
 
 # ******** WE NEED TO CHANGE THE RGB VALUES BELOW; THEY'RE RANDOM FOR NOW**********
 p1_name_selector = customize_menu.add.text_input('Player 1: ', default='<EDIT>', onchange=p1_name_selection, maxchar=10)
@@ -503,8 +508,8 @@ def got_snake_bite(player_entry, end_square):
   
   snakemessage = random.choice(snake_bite) + " " + player_entry[0] + f"! You got sent back to square {end_square}."
   snakemessage_img = font.render(snakemessage, True, player_entry[3])
-  pg.draw.rect(screen, (0,0,0), (600, 350, 300, 50))
-  screen.blit(snakemessage_img, (600, 350))
+  pg.draw.rect(screen, (0,0,0), (600, 290, 300, 50))
+  screen.blit(snakemessage_img, (600, 290))
   # time.sleep(1)
   # pg.draw.rect(screen, (0,0,0), (700, 350, 300, 50))
 
@@ -520,8 +525,8 @@ def got_ladder_jump(player_entry, end_square):
   
   laddermessage = random.choice(ladder_jump) + " " + player_entry[0] + f"! You got sent to square {end_square}"
   laddermessage_img = font.render(laddermessage, True, player_entry[3])
-  pg.draw.rect(screen, (0,0,0), (600, 350, 300, 50))
-  screen.blit(laddermessage_img, (600, 350))
+  pg.draw.rect(screen, (0,0,0), (600, 290, 400, 50))
+  screen.blit(laddermessage_img, (600, 290))
   # time.sleep(1)
   # pg.draw.rect(screen, (0,0,0), (700, 350, 300, 50))
 
@@ -569,22 +574,22 @@ def generate_S_and_L(player_entry):
     #   stop_angle = [math.pi / 2, math.pi / 3, math.pi / 4, math.pi / 5]
 
     # pg.draw.arc(screen, (3, 252, 65), rect, random.choice(start_angle), random.choice(stop_angle))
+    
+    if str(playersinfo[turn-1][2]) == "0":
+      pg.draw.rect(screen, (0,0,0), (750, 225, 200, 50))
+    else:
+      area_title = "You are now at square " + str(playersinfo[turn-1][2]) + "."
+      area_title_img = font.render(area_title, True, playersinfo[turn-1][3])
+      pg.draw.rect(screen, (0,0,0), (750, 225, 200, 50))
+      screen.blit(area_title_img, (750, 225))
 
     if player_entry[2] == i[0]:
       player_entry[2] = i[1]
       transport_piece(player_entry, i[0])
       got_snake_bite(player_entry, i[1])
-      print('YOU WENT DOWN A SNAKE')
-      print(i[1], i[0])
-    else:
-      pg.draw.rect(screen, (0,0,0), (750, 225, 200, 50))
-    
 
-    area_title = "You are now at square " + str(playersinfo[turn-1][2]) + "."
-    area_title_img = font.render(area_title, True, playersinfo[turn-1][3])
-    pg.draw.rect(screen, (0,0,0), (750, 225, 200, 50))
-    screen.blit(area_title_img, (750, 225))
-
+    #else:
+      #pg.draw.rect(screen, (0,0,0), (600, 350, 300, 50))
 
   for i in ladders.items():
     pg.draw.rect(screen, (0,0,0), (750, 225, 200, 50))
@@ -597,24 +602,23 @@ def generate_S_and_L(player_entry):
     pg.draw.line(screen, (252, 232, 3), start_pos, end_pos, 2)
     pg.draw.line(screen, (252, 232, 3), start_pos2, end_pos2, 2)
     
+    if str(playersinfo[turn-1][2]) == "0":
+      pg.draw.rect(screen, (0,0,0), (750, 225, 200, 50))
+    else:
+      area_title = "You are now at square " + str(playersinfo[turn-1][2]) + "."
+      area_title_img = font.render(area_title, True, playersinfo[turn-1][3])
+      pg.draw.rect(screen, (0,0,0), (750, 225, 200, 50))
+      screen.blit(area_title_img, (750, 225))
+
+
     if player_entry[2] == i[0]:
       player_entry[2] = i[1]
       transport_piece(player_entry, i[0])
       got_ladder_jump(player_entry, i[1])
-      print('YOU WENT UP A LADDER')
-      print(i[1], i[0])
-    else:
-      pg.draw.rect(screen, (0,0,0), (750, 225, 200, 50))
-    # else:
-    #    pg.draw.rect(screen, (0,0,0), (700, 350, 300, 50))
 
-    area_title = "You are now at square " + str(playersinfo[turn-1][2]) + "."
-    area_title_img = font.render(area_title, True, playersinfo[turn-1][3])
-    pg.draw.rect(screen, (0,0,0), (750, 225, 200, 50))
-    screen.blit(area_title_img, (750, 225))
-
-
-
+    #else:
+      #pg.draw.rect(screen, (0,0,0), (600, 350, 300, 50))
+  
 #def unblit_message(): <----- NOT NEEDED ANYMORE
  # rect = pg.Rect(0, 0, 0, 0)
   #rect.width = 300
@@ -638,3 +642,36 @@ while running:
       menu.draw(screen)
     pg.display.update()
 
+#def quickest_way_up(ladders, snakes):
+  #pass
+  #ladders = {
+   # 3: 20,
+   # 11: 28,
+   # 17: 74,
+   # 22: 37,
+   # 49: 67,
+  #  73: 86,
+   # 88: 91
+  #}
+
+ # min_rolls = 0
+ # pos = 0
+  #rolls = 0
+  #
+  #for i in range(len(ladders)):
+  #  pos = ladders[i][1]
+  #  rolls += 1
+  # for j in range(len(ladders)):
+  #   if ladders[j][0] > pos:
+  #       for k in range(j, len(ladders)):
+  #          pos = ladders[k][1]
+  #          rolls += 1
+  #          if new_pos < pos:
+  #             new_pos = pos
+  #   
+  
+
+# ------------------------------ RESOURCES ---------------------------------------
+# ------------ https://www.geeksforgeeks.org/snake-ladder-problem-2/ -------------
+# ------- https://pygame-menu.readthedocs.io/en/3.5.2/_source/themes.html --------
+# --------------------------------------------------------------------------------
