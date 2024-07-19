@@ -125,7 +125,8 @@ def place_game_pieces(player_entry):
   screen.blit(image, coords[100 - player_entry[2]][player_entry[2]])
 
 def transport_piece(player_entry, old_value):
-  image = pg.image.load(player_entry[1])
+  print("PLAYER ENTRY 2 VALUES: ", player_entry[1], " - OOLD VALUE => ", old_value)
+  image = pg.image.load(str(player_entry[1]))
   image.fill((0,0,0, 255))
   screen.blit(image, coords[100 - old_value][old_value])
   """ num_text = str(old_value)
@@ -158,18 +159,29 @@ def snakes_and_ladders(player_entry):
         dice = get_dice_value()
         old_value = player_entry[2]
         player_entry[2] += dice
-        transport_piece(player_entry, old_value)
-        turn += 1
-        if turn == number_of_players:
-          turn = 0
-        print(turn)
-        break
+        if player_entry[2] < 100:
+          transport_piece(player_entry, old_value)
+          generate_S_and_L(playersinfo[turn])
+          turn += 1
+          if turn == number_of_players:
+            turn = 0
+          print(turn, player_entry[2])
+          break
+        elif player_entry[2] >= 100:
+          player_entry[2] = 100
+          transport_piece(player_entry, old_value)
+          generate_S_and_L(playersinfo[turn])
+          turn += 1
+          if turn == number_of_players:
+            turn = 0
+          print(turn, player_entry[2])
+          print(turn, 'WINNER')
+          break
 
-   
-   
+
 def get_dice_value():
     global dice_value
-    time.sleep(1)
+    # time.sleep(1)
     dice_value = random.randint(1, 6)
 
     print("Its a " + str(dice_value))
@@ -215,12 +227,15 @@ def main_screen():
           if event.type == pg.QUIT:
               run = False
               pg.QUIT()
-        generate_S_and_L()
+        generate_S_and_L(playersinfo[turn])
         pg.display.update()
 
 main_theme = pygame_menu.themes.THEME_BLUE.copy()
 main_theme.widget_font = pygame_menu.font.FONT_MUNRO
-
+main_theme.title_font = pygame_menu.font.FONT_FRANCHISE
+main_theme.title_bar_style = pygame_menu.widgets.MENUBAR_STYLE_SIMPLE
+main_theme.title_offset = (5, 1)
+main_theme.title_font_color = (23, 101, 179)
 
 menu = pygame_menu.Menu('Snakes and Ladders', 1000, 600,
                        theme=main_theme) # decorate this later
@@ -447,7 +462,7 @@ def players_turns():
       
 
 # Generate snakes and ladders
-def generate_S_and_L():
+def generate_S_and_L(player_entry):
    
    # ladder takes you up from 'key' to 'value'
   ladders = {
@@ -470,29 +485,6 @@ def generate_S_and_L():
     90: 48,
     92: 25,
   }
-
-  # Accessing value for a specific key
-# key_to_lookup = 26
-# if key_to_lookup in snakes:
-#     print(f"Value for key {key_to_lookup}: {snakes[key_to_lookup]}")
-# else:
-#     print(f"Key {key_to_lookup} not found in the dictionary.")
-
-# # Iterating over the dictionary
-# for key, value in snakes.items():
-#     print(f"Key: {key}, Value: {value}")
-
-# # Getting all keys in the dictionary
-# all_keys = snakes.keys()
-# print(f"All keys: {list(all_keys)}")
-
-# # Getting all values in the dictionary
-# all_values = snakes.values()
-# print(f"All values: {list(all_values)}")
-
-# # Getting all key-value pairs
-# all_items = snakes.items()
-# print(f"All items: {list(all_items)}")
  
   
   for i in snakes.items():
@@ -501,12 +493,23 @@ def generate_S_and_L():
     end_pos = (coords[100 - i[1]][i[1]][0]+25, coords[100 - i[1]][i[1]][1]+25)
     pg.draw.line(screen, (255, 110, 107), start_pos, end_pos, 2)
 
+    if player_entry[2] == i[0]:
+      player_entry[2] = i[1]
+      transport_piece(player_entry, i[0])
+      print('YOU WENT DOWN A SNAKE')
+      print(i[1], i[0])
+
   for i in ladders.items():
 
     start_pos = (coords[100 - i[0]][i[0]][0]+25, coords[100 - i[0]][i[0]][1]+25)
     end_pos = (coords[100 - i[1]][i[1]][0]+25, coords[100 - i[1]][i[1]][1]+25)
     pg.draw.line(screen, (98, 255, 0), start_pos, end_pos, 2)
     
+    if player_entry[2] == i[0]:
+      player_entry[2] = i[1]
+      transport_piece(player_entry, i[0])
+      print('YOU WENT U A SNAKE')
+      print(i[1], i[0])
 
 
 # Add a message to the screen for snake hits
