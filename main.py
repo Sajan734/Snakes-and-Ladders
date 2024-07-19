@@ -191,29 +191,21 @@ def get_dice_value():
 def open_customize():
   menu._open(customize_menu)
 
-def move_player(player_entry):
-  dice_roll = get_dice_value()
-
-
-   # 1. Roll Dice
-   # 2. Add to the counter and blit
-   # 3. Check snakes and ladders, and blit if applicable
-   # 4. Check Win
-
-
+   
 def main_screen():
     global scale_x, scale_y, GRID_WIDTH, GRID_HEIGHT, number_of_players, width, turn, playersinfo
+    global p1_colour, p2_colour, p3_colour, p4_colour, p5_colour, p6_colour
     bg = (0, 0, 0),
     screen.fill(bg)
     
-      #Getting all the player information sorted
+      #Getting all the player information sorted (name, sprite, initial position, colour)
     playersinfo = []
-    playersinfo.append([p1_name, p1avatar, 0])
-    playersinfo.append([p2_name, p2avatar, 0])
-    playersinfo.append([p3_name, p3avatar, 0])
-    playersinfo.append([p4_name, p4avatar, 0])
-    playersinfo.append([p5_name, p5avatar, 0])
-    playersinfo.append([p6_name, p6avatar, 0])
+    playersinfo.append([p1_name, p1avatar, 0, p1_colour])
+    playersinfo.append([p2_name, p2avatar, 0, p2_colour])
+    playersinfo.append([p3_name, p3avatar, 0, p3_colour])
+    playersinfo.append([p4_name, p4avatar, 0, p4_colour])
+    playersinfo.append([p5_name, p5avatar, 0, p5_colour])
+    playersinfo.append([p6_name, p6avatar, 0, p6_colour])
 
     playersinfo = playersinfo[: number_of_players]
     run = True
@@ -287,37 +279,37 @@ p6avatar = spriteslist[0]
 def p1_colour_selection(key, value):
   global p1_colour
   global p1avatar
-  p1_colour = key
+  p1_colour = value
   p1avatar = spriteslist[key[1]]
   print(p1_colour)
 def p2_colour_selection(key, value):
   global p2_colour
   global p2avatar
-  p2_colour = key
+  p2_colour = value
   p2avatar = spriteslist[key[1]]
   print(p2_colour)
 def p3_colour_selection(key, value):
   global p3_colour
   global p3avatar
-  p3_colour = key
+  p3_colour = value
   p3avatar = spriteslist[key[1]]
   print(p3_colour)
 def p4_colour_selection(key, value):
   global p4_colour
   global p4avatar
-  p4_colour = key
+  p4_colour = value
   p4avatar = spriteslist[key[1]]
   print(p4_colour)
 def p5_colour_selection(key, value):
   global p5_colour
   global p5avatar
-  p5_colour = key
+  p5_colour = value
   p5avatar = spriteslist[key[1]]
   print(p5_colour)
 def p6_colour_selection(key, value):
   global p6_colour
   global p6avatar
-  p6_colour = key
+  p6_colour = value
   p6avatar = spriteslist[key[1]]
   print(p6_colour)
 
@@ -496,6 +488,7 @@ def generate_S_and_L(player_entry):
     if player_entry[2] == i[0]:
       player_entry[2] = i[1]
       transport_piece(player_entry, i[0])
+      got_snake_bite(player_entry, i[1])
       print('YOU WENT DOWN A SNAKE')
       print(i[1], i[0])
 
@@ -508,12 +501,14 @@ def generate_S_and_L(player_entry):
     if player_entry[2] == i[0]:
       player_entry[2] = i[1]
       transport_piece(player_entry, i[0])
-      print('YOU WENT U A SNAKE')
+      got_snake_bite(player_entry, i[1])
+      print('YOU WENT UP A LADDER')
       print(i[1], i[0])
 
 
 # Add a message to the screen for snake hits
-def got_snake_bite(currentplayer):
+def got_snake_bite(player_entry, end_square):
+  unblit_message()
   snake_bite = [
     "Boohoo ):",
     "Bummer",
@@ -521,13 +516,13 @@ def got_snake_bite(currentplayer):
     "Oh no",
     "Dang"]
   
-  snakemessage = random.choice(snake_bite) + " " + currentplayer + "! You got sent back to "
-  snakemessage_img = font.render(snakemessage, True, blue)
-  pg.draw.rect(screen, green, (200, 150))
+  snakemessage = random.choice(snake_bite) + " " + player_entry[0] + f"! You got sent back to square {end_square}"
+  snakemessage_img = font.render(snakemessage, True, player_entry[3])
   screen.blit(snakemessage_img, (700, 350))
 
 # Add a message to the screen for ladder hits
-def got_ladder_jump(currentplayer):
+def got_ladder_jump(player_entry, end_square):
+  unblit_message()
   ladder_jump = [
     "Woohoo",
     "Wow",
@@ -535,10 +530,17 @@ def got_ladder_jump(currentplayer):
     "No way ",
     "Yaayy"]
   
-  laddermessage = random.choice(ladder_jump) + " " + currentplayer + "! You got sent to "
-  laddermessage_img = font.render(laddermessage, True, blue)
-  pg.draw.rect(screen, green, (200, 150))
+  laddermessage = random.choice(ladder_jump) + " " + player_entry[0] + f"! You got sent to square {end_square}"
+  laddermessage_img = font.render(laddermessage, True, player_entry[3])
   screen.blit(laddermessage_img, (700, 350))
+
+def unblit_message():
+  rect = pg.Rect(0, 0, 0, 0)
+  rect.width = 300
+  rect.height = 30
+  rect.left = 700
+  rect.top = 350
+  pg.draw.rect(screen, (255, 255, 255), rect)
 
 running = True
 while running:
