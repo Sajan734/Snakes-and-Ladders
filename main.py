@@ -166,7 +166,6 @@ def snakes_and_ladders(player_entry):
         break
 
    
-   
 def get_dice_value():
     global dice_value
     time.sleep(1)
@@ -331,7 +330,6 @@ def p6_name_selection(value):
   p6_name = value
   print(p6_name)
 
-# ******** WE NEED TO CHANGE THE RGB VALUES BELOW; THEY'RE RANDOM FOR NOW**********
 p1_name_selector = customize_menu.add.text_input('Player 1: ', default='<EDIT>', onchange=p1_name_selection, maxchar=10)
 p1_colour_selector = customize_menu.add.dropselect(
     title='Player 1',
