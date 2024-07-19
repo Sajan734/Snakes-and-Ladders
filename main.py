@@ -47,8 +47,12 @@ clock = pg.time.Clock()
 white = (255, 255, 255)
 gride = []
 scale_y = (600 - GRID_HEIGHT)/2
-scale_x = (1000 - GRID_WIDTH)/2
+scale_x = 50
+x_width = 0
 
+for i in range(10):
+    row = [0] * 10
+    gride.append(row)
 
 def create_grid_():
     global scale_y, scale_x
@@ -59,10 +63,6 @@ def create_grid_():
     for x in range(0, 11):
         pg.draw.line(screen, grid, (0 + scale_x, x * 50 + scale_y ), (GRID_WIDTH + scale_x, x * 50 + scale_y), line_width)
         pg.draw.line(screen, grid, (x * 50 + scale_x, 0 + scale_y), (x * 50 + scale_x, GRID_HEIGHT + scale_y), line_width)
-
-for i in range(10):
-    row = [0] * 10
-    gride.append(row)
 
 def create_numbers():
     global scale_x, scale_y
@@ -112,13 +112,15 @@ def create_grid(screen, x_squares, y_squares, colour = (255, 255, 255), x = (50,
   return x_list, y_list, x_width, y_width
 
 
-screen = pg.display.set_mode((1000, 600))
-
 def open_customize():
   menu._open(customize_menu)
 
 def main_screen():
     global scale_x, scale_y, GRID_WIDTH, GRID_HEIGHT
+    bg = (0, 0, 0)
+    screen.fill(bg)
+    
+    run = True
     while run:
         x_list, y_list, x_width, y_width = create_grid(screen, 10, 10, x= (scale_x, scale_x + GRID_WIDTH), y = (scale_y, scale_y + GRID_HEIGHT))
         create_numbers()
@@ -150,7 +152,6 @@ menu.add.button('Quit', pygame_menu.events.EXIT)
 
 # def numberofplayerfunc():
 #    for i in range(customize_menu)
-
 
 
 customize_menu = pygame_menu.Menu('Customize', 1000, 600,
