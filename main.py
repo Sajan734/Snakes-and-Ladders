@@ -16,6 +16,24 @@ line_width = 3
 GRID_HEIGHT = 500
 GRID_WIDTH = 500
 
+#Getting the colours in a list
+colourlist = [('Red', (0, 0, 0)),
+          ('Orange', (0, 0, 255)),
+          ('Yellow', (0, 255, 255)),
+          ('Green', (255, 0, 255)),
+          ('Blue', (0, 255, 0)),
+          ('Purple', (255, 0, 0)),
+          ('Pink', (255, 255, 0))]
+#Making the sprites for the players
+red = "game_pieces/red.png"
+orange = "game_pieces/orange.png"
+yellow = "game_pieces/yellow.png"
+green = "game_pieces/green.png"
+blue = "game_pieces/blue.png"
+purple = "game_pieces/purple.png"
+pink = "game_pieces/pink.png"
+spriteslist = [red, orange, yellow, green, blue, purple, pink]
+
 blue = (0, 0, 255)
 pg.font.init()
 font = pg.font.Font(None, 20)
@@ -157,29 +175,48 @@ p4_name = 'p4'
 p5_name = 'p5'
 p6_name = 'p6'
 
+p1avatar = spriteslist[0]
+p2avatar = spriteslist[0]
+p3avatar = spriteslist[0]
+p4avatar = spriteslist[0]
+p5avatar = spriteslist[0]
+p6avatar = spriteslist[0]
+
 def p1_colour_selection(key, value):
   global p1_colour
-  p1_colour = value
+  global p1avatar
+  p1_colour = key
+  p1avatar = spriteslist[key[1]]
   print(p1_colour)
 def p2_colour_selection(key, value):
   global p2_colour
-  p2_colour = value
+  global p2avatar
+  p2_colour = key
+  p2avatar = spriteslist[key[1]]
   print(p2_colour)
 def p3_colour_selection(key, value):
   global p3_colour
-  p3_colour = value
+  global p3avatar
+  p3_colour = key
+  p3avatar = spriteslist[key[1]]
   print(p3_colour)
 def p4_colour_selection(key, value):
   global p4_colour
-  p4_colour = value
+  global p4avatar
+  p4_colour = key
+  p4avatar = spriteslist[key[1]]
   print(p4_colour)
 def p5_colour_selection(key, value):
   global p5_colour
-  p5_colour = value
+  global p5avatar
+  p5_colour = key
+  p5avatar = spriteslist[key[1]]
   print(p5_colour)
 def p6_colour_selection(key, value):
   global p6_colour
-  p6_colour = value
+  global p6avatar
+  p6_colour = key
+  p6avatar = spriteslist[key[1]]
   print(p6_colour)
 
 def p1_name_selection(value):
@@ -207,84 +244,59 @@ def p6_name_selection(value):
   p6_name = value
   print(p6_name)
 
+#Getting all the player information sorted
+playersinfo = []
+playersinfo.append([p1_name, p1avatar])
+playersinfo.append([p2_name, p2avatar])
+playersinfo.append([p3_name, p3avatar])
+playersinfo.append([p4_name, p4avatar])
+playersinfo.append([p5_name, p5avatar])
+playersinfo.append([p6_name, p6avatar])
+
 # ******** WE NEED TO CHANGE THE RGB VALUES BELOW; THEY'RE RANDOM FOR NOW**********
 p1_name_selector = customize_menu.add.text_input('Player 1: ', default='<EDIT>', onchange=p1_name_selection, maxchar=10)
 p1_colour_selector = customize_menu.add.dropselect(
     title='Player 1',
-    items=[('Red', (0, 0, 0)),
-          ('Orange', (0, 0, 255)),
-          ('Yellow', (0, 255, 255)),
-          ('Green', (255, 0, 255)),
-          ('Blue', (0, 255, 0)),
-          ('Purple', (255, 0, 0)),
-          ('Pink', (255, 255, 0))],
+    items= colourlist,
     placeholder='Scroll to see colours'
 )
 
 p2_name_selector = customize_menu.add.text_input('Player 2: ', default='<EDIT>', onchange=p2_name_selection, maxchar=10)
 p2_colour_selector = customize_menu.add.dropselect(
     title='Player 2',
-    items=[('Red', (0, 0, 0)),
-          ('Orange', (0, 0, 255)),
-          ('Yellow', (0, 255, 255)),
-          ('Green', (255, 0, 255)),
-          ('Blue', (0, 255, 0)),
-          ('Purple', (255, 0, 0)),
-          ('Pink', (255, 255, 0))],
+    items= colourlist,
     placeholder='Scroll to see colours'
 )
 
 p3_name_selector = customize_menu.add.text_input('Player 3: ', default='<EDIT>', onchange=p3_name_selection, maxchar=10)
 p3_colour_selector = customize_menu.add.dropselect(
     title='Player 3',
-    items=[('Red', (0, 0, 0)),
-          ('Orange', (0, 0, 255)),
-          ('Yellow', (0, 255, 255)),
-          ('Green', (255, 0, 255)),
-          ('Blue', (0, 255, 0)),
-          ('Purple', (255, 0, 0)),
-          ('Pink', (255, 255, 0))],
+    items= colourlist,
     placeholder='Scroll to see colours'
 )
 
 p4_name_selector = customize_menu.add.text_input('Player 4: ', default='<EDIT>', onchange=p4_name_selection, maxchar=10)
 p4_colour_selector = customize_menu.add.dropselect(
     title='Player 4',
-    items=[('Red', (0, 0, 0)),
-          ('Orange', (0, 0, 255)),
-          ('Yellow', (0, 255, 255)),
-          ('Green', (255, 0, 255)),
-          ('Blue', (0, 255, 0)),
-          ('Purple', (255, 0, 0)),
-          ('Pink', (255, 255, 0))],
+    items= colourlist,
     placeholder='Scroll to see colours',
 )
 
 p5_name_selector = customize_menu.add.text_input('Player 5: ', default='<EDIT>', onchange=p5_name_selection, maxchar=10)
 p5_colour_selector = customize_menu.add.dropselect(
     title='Player 5',
-    items=[('Red', (0, 0, 0)),
-          ('Orange', (0, 0, 255)),
-          ('Yellow', (0, 255, 255)),
-          ('Green', (255, 0, 255)),
-          ('Blue', (0, 255, 0)),
-          ('Purple', (255, 0, 0)),
-          ('Pink', (255, 255, 0))],
+    items= colourlist,
     placeholder='Scroll to see colours',
 )
 
 p6_name_selector = customize_menu.add.text_input('Player 6: ', default='<EDIT>', onchange=p6_name_selection, maxchar=10)
 p6_colour_selector = customize_menu.add.dropselect(
     title='Player 6',
-    items=[('Red', (0, 0, 0)),
-          ('Orange', (0, 0, 255)),
-          ('Yellow', (0, 255, 255)),
-          ('Green', (255, 0, 255)),
-          ('Blue', (0, 255, 0)),
-          ('Purple', (255, 0, 0)),
-          ('Pink', (255, 255, 0))],
+    items= colourlist,
     placeholder='Scroll to see colours'
 )
+
+
 
 p3_colour_selector.hide()
 p4_colour_selector.hide()
