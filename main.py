@@ -226,12 +226,12 @@ def main_screen():
     
       #Getting all the player information sorted (name, sprite, initial position, colour)
     playersinfo = []
-    playersinfo.append([p1_name, p1avatar, 0, p1_colour, p1_colour])
-    playersinfo.append([p2_name, p2avatar, 0, p2_colour, p2_colour])
-    playersinfo.append([p3_name, p3avatar, 0, p3_colour, p3_colour])
-    playersinfo.append([p4_name, p4avatar, 0, p4_colour, p4_colour])
-    playersinfo.append([p5_name, p5avatar, 0, p5_colour, p5_colour])
-    playersinfo.append([p6_name, p6avatar, 0, p6_colour, p6_colour])
+    playersinfo.append([p1_name, p1avatar, 0, p1_colour])
+    playersinfo.append([p2_name, p2avatar, 0, p2_colour])
+    playersinfo.append([p3_name, p3avatar, 0, p3_colour])
+    playersinfo.append([p4_name, p4avatar, 0, p4_colour])
+    playersinfo.append([p5_name, p5avatar, 0, p5_colour])
+    playersinfo.append([p6_name, p6avatar, 0, p6_colour])
 
     playersinfo = playersinfo[: number_of_players]
     run = True
