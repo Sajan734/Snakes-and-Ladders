@@ -131,7 +131,7 @@ def place_game_pieces(player_entry):
   global coords, image, turn, playersinfo
   image = pg.image.load(player_entry[1])
   pg.transform.scale(image, (30, 30))
-  # print("PLAYER ENTRY 3 VALUES: ", player_entry[3]) 
+  print("PLAYER ENTRY 3 VALUES: ", player_entry[3][0][1]) 
   player_icon = font.render(str(turn + 1), True, player_entry[3][0][1]) # <== playersinfo[turn][3]
   screen.blit(image, coords[100 - player_entry[2]][player_entry[2]])
   screen.blit(player_icon, (coords[100 - player_entry[2]][player_entry[2]][0]+30, coords[100 - player_entry[2]][player_entry[2]][1]))
