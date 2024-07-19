@@ -50,6 +50,8 @@ purple = "game_pieces/purple.png"
 pink = "game_pieces/pink.png"
 spriteslist = [red, orange, yellow, green, blue, purple, pink]
 
+blackBg = (0, 0, 0)
+
 blue = (0, 0, 255)
 pg.font.init()
 font = pg.font.Font(None, 20)
@@ -59,6 +61,8 @@ fontXL = pg.font.Font(None, 50)
 screen = pg.display.set_mode((1000, 600))
 pg.display.set_caption("Snakes and Ladders")
 clock = pg.time.Clock()
+
+
     
 white = (255, 255, 255)
 gride = []
@@ -109,6 +113,11 @@ def create_grid(screen, x_squares, y_squares, colour = (255, 255, 255), x = (50,
     x_list.append(x_coord)
     pg.draw.line(screen, colour, (x_coord, y[0]), (x_coord, y[1]), line_width)
 
+    gameTitle = "Snakes and Ladders"
+    gameTitle_img = fontXL.render(gameTitle, True, blue)
+    # pg.draw.rect(screen, green, (200, 150))
+    screen.blit(gameTitle_img, (600, 50))
+
   #Do the same process for the y-values
 
   y_list = []
@@ -119,16 +128,20 @@ def create_grid(screen, x_squares, y_squares, colour = (255, 255, 255), x = (50,
   return x_list, y_list, width,
 
 def place_game_pieces(player_entry):
-  global coords, image
+  global coords, image, turn, playersinfo
   image = pg.image.load(player_entry[1])
   pg.transform.scale(image, (30, 30))
+  # print("PLAYER ENTRY 3 VALUES: ", player_entry[3]) 
+  player_icon = font.render(str(turn + 1), True, player_entry[3][0][1]) # <== playersinfo[turn][3]
   screen.blit(image, coords[100 - player_entry[2]][player_entry[2]])
+  screen.blit(player_icon, (coords[100 - player_entry[2]][player_entry[2]][0]+30, coords[100 - player_entry[2]][player_entry[2]][1]))
 
 def transport_piece(player_entry, old_value):
-  print("PLAYER ENTRY 2 VALUES: ", player_entry[1], " - OOLD VALUE => ", old_value)
+  # print("PLAYER ENTRY 2 VALUES: ", player_entry[1], " - OOLD VALUE => ", old_value)
   image = pg.image.load(str(player_entry[1]))
   image.fill((0,0,0, 255))
-  screen.blit(image, coords[100 - old_value][old_value])
+  
+  screen.blit(image, (coords[100 - old_value][old_value][0]+10, coords[100 - old_value][old_value][1]))
   """ num_text = str(old_value)
     x_pos = old_value // 10
     y_pos = old_value % 10
@@ -136,6 +149,8 @@ def transport_piece(player_entry, old_value):
     screen.blit(num_img, (x_pos * 50 + 12 + scale_x, y_pos * 50 + 12 + scale_y))"""
   create_grid(screen, 10, 10, x= (scale_x, scale_x + GRID_WIDTH), y = (scale_y, scale_y + GRID_HEIGHT))
   
+
+
 
   place_game_pieces(player_entry)
 
@@ -166,6 +181,12 @@ def snakes_and_ladders(player_entry):
           if turn == number_of_players:
             turn = 0
           print(turn, player_entry[2])
+          playerTurnTitle = f"Player {turn+1}'s turn"
+          # playersinfo[turn][3]
+          print(playersinfo[turn])
+          playerTurnTitle_img = fontM.render(playerTurnTitle, True, playersinfo[turn][3][0][1])
+          pg.draw.rect(screen, (0,0,0), (650, 150, 200, 50))
+          screen.blit(playerTurnTitle_img, (600, 150))
           break
         elif player_entry[2] >= 100:
           player_entry[2] = 100
@@ -183,8 +204,13 @@ def get_dice_value():
     global dice_value
     # time.sleep(1)
     dice_value = random.randint(1, 6)
-
+    die_image = pg.image.load(f'dice/dice-{str(dice_value)}.png')
+    screen.blit(die_image, (600, 400))
     print("Its a " + str(dice_value))
+    gameStatusTitle = "Its a " + str(dice_value)
+    gameStatusTitle_img = fontM.render(gameStatusTitle, True, playersinfo[turn][3][0][1])
+    pg.draw.rect(screen, (0,0,0), (650, 200, 200, 50))
+    screen.blit(gameStatusTitle_img, (600, 150))
     return dice_value
 
 
@@ -208,12 +234,12 @@ def main_screen():
     
       #Getting all the player information sorted
     playersinfo = []
-    playersinfo.append([p1_name, p1avatar, 0])
-    playersinfo.append([p2_name, p2avatar, 0])
-    playersinfo.append([p3_name, p3avatar, 0])
-    playersinfo.append([p4_name, p4avatar, 0])
-    playersinfo.append([p5_name, p5avatar, 0])
-    playersinfo.append([p6_name, p6avatar, 0])
+    playersinfo.append([p1_name, p1avatar, 0, p1_colour])
+    playersinfo.append([p2_name, p2avatar, 0, p2_colour])
+    playersinfo.append([p3_name, p3avatar, 0, p3_colour])
+    playersinfo.append([p4_name, p4avatar, 0, p4_colour])
+    playersinfo.append([p5_name, p5avatar, 0, p5_colour])
+    playersinfo.append([p6_name, p6avatar, 0, p6_colour])
 
     playersinfo = playersinfo[: number_of_players]
     run = True
@@ -255,12 +281,12 @@ numberofplayerslider = customize_menu.add.range_slider('# of Players', 0, list(p
                       slider_text_value_enabled=False,
                       value_format=lambda x: player_number_options[x])
 
-p1_colour = (0, 0, 0)
-p2_colour = (0, 0, 0)
-p3_colour = (0, 0, 0)
-p4_colour = (0, 0, 0)
-p5_colour = (0, 0, 0)
-p6_colour = (0, 0, 0)
+p1_colour = (('Red', (255, 0, 0)), 0)
+p2_colour = (('Red', (255, 0, 0)), 0)
+p3_colour = (('Red', (255, 0, 0)), 0)
+p4_colour = (('Red', (255, 0, 0)), 0)
+p5_colour = (('Red', (255, 0, 0)), 0)
+p6_colour = (('Red', (255, 0, 0)), 0)
 
 p1_name = 'p1'
 p2_name = 'p2'
@@ -281,6 +307,7 @@ def p1_colour_selection(key, value):
   global p1avatar
   p1_colour = key
   p1avatar = spriteslist[key[1]]
+
   print(p1_colour)
 def p2_colour_selection(key, value):
   global p2_colour
@@ -536,7 +563,7 @@ def got_ladder_jump(currentplayer):
   
   laddermessage = random.choice(ladder_jump) + " " + currentplayer + "! You got sent to "
   laddermessage_img = font.render(laddermessage, True, blue)
-  pg.draw.rect(screen, green, (200, 150))
+  # pg.draw.rect(screen, green, (200, 150))
   screen.blit(laddermessage_img, (700, 350))
 
 running = True
