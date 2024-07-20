@@ -116,10 +116,10 @@ def create_grid(screen, x_squares, y_squares, colour = (255, 255, 255), x = (50,
     gameTitle = "Snakes and Ladders"
     gameTitle_img = fontXL.render(gameTitle, True, blue)
     labelTitle = "Press space to roll a die"
-    labelTitle_img = font.render(labelTitle, True, white)
+    labelTitle_img = fontM.render(labelTitle, True, white)
     # pg.draw.rect(screen, green, (200, 150))
     screen.blit(gameTitle_img, (600, 50))
-    screen.blit(labelTitle_img, (650, 90))
+    screen.blit(labelTitle_img, (600, 90))
 
   #Do the same process for the y-values
 
@@ -241,7 +241,7 @@ def get_dice_value():
 
 def display_usernames():
   for i in range(len(playersinfo)):
-    username = str(i+1) + ": " + playersinfo[i][0]
+    username = str(i+1) + ": " + playersinfo[i][0] + ' - ' + str(playersinfo[i][2])
     username_img = fontM.render(username, True, playersinfo[i][3])
     image = pg.image.load(playersinfo[i][1])
     pg.transform.scale(image, (10, 10))
